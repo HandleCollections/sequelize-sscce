@@ -24,6 +24,17 @@ module.exports = async function() {
     }
   });
 
+  // lib/sql-string.js formatNamedParameters gets the sql with `WHERE name = "some:foo"`
+  // it will try to replace the ":foo", even tho it is not supposed to get replaced
+  const query = {
+    where: {
+      name: 'some:foo', // this is a user provided string
+    },
+    replacements: {
+      test: 'this is used somewhere',
+    },
+  };
+
   const Foo = sequelize.define('Foo', { name: DataTypes.TEXT });
 
   const spy = sinon.spy();
@@ -31,6 +42,6 @@ module.exports = async function() {
   await sequelize.sync();
   expect(spy).to.have.been.called;
 
-  log(await Foo.create({ name: 'foo' }));
-  expect(await Foo.count()).to.equal(1);
+  log(await Foo.create({ name: 'some:foo' }));
+  expect(await Foo.findAll(query)).to.equal(1);
 };
