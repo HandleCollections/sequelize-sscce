@@ -31,7 +31,7 @@ module.exports = async function() {
       name: 'some:foo', // this is a user provided string
     },
     replacements: {
-      test: 'this is used somewhere',
+      foo: ` or name = ' or ' = `,
     },
   };
 
@@ -43,5 +43,7 @@ module.exports = async function() {
   expect(spy).to.have.been.called;
 
   log(await Foo.create({ name: 'some:foo' }));
+  log(await Foo.create({ name: 'foo1' }));
+  log(await Foo.create({ name: 'foo2' }));
   expect(await Foo.findAll(query)).to.equal(1);
 };
